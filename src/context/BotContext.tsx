@@ -861,3 +861,196 @@ export const BotProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const createInvoice = async (invoice: Omit<Invoice, 'id' | 'createdAt' | 'updatedAt' | 'subscriberName'>): Promise<boolean> => {
     try {
+      const success = await DatabaseService.addInvoice(invoice);
+      if (success) {
+        const updatedInvoices = await DatabaseService.getInvoices();
+        setInvoices(updatedInvoices);
+      }
+      return success;
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      return false;
+    }
+  };
+
+  const updateInvoice = async (id: string, updates: Partial<Invoice>): Promise<boolean> => {
+    try {
+      const success = await DatabaseService.updateInvoice(id, updates);
+      if (success) {
+        const updatedInvoices = await DatabaseService.getInvoices();
+        setInvoices(updatedInvoices);
+      }
+      return success;
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      return false;
+    }
+  };
+
+  const updateSettings = async (newSettings: Partial<BotSettings>): Promise<boolean> => {
+    try {
+      const updatedSettings = { ...settings, ...newSettings };
+      const success = await DatabaseService.updateBotSettings(updatedSettings);
+      if (success) {
+        setSettings(updatedSettings);
+      }
+      return success;
+    } catch (error) {
+      console.error('Error updating settings:', error);
+      return false;
+    }
+  };
+
+  const testBotConnection = async (): Promise<boolean> => {
+    if (!settings.botToken) return false;
+
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${settings.botToken}/getMe`);
+      const data = await response.json();
+      
+      if (data.ok) {
+        const newSettings = {
+          ...settings,
+          botUsername: data.result.username,
+          isConnected: true,
+          lastSync: new Date().toISOString()
+        };
+        await updateSettings(newSettings);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error testing bot connection:', error);
+      return false;
+    }
+  };
+
+  const addNotification = async (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>): Promise<boolean> => {
+    try {
+      const newNotification = {
+        ...notification,
+        id: `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        timestamp: new Date().toISOString(),
+        read: false
+      };
+      
+      const success = await DatabaseService.addNotification(newNotification);
+      if (success) {
+        const updatedNotifications = await DatabaseService.getNotifications();
+        setNotifications(updatedNotifications);
+      }
+      return success;
+    } catch (error) {
+      console.error('Error adding notification:', error);
+      return false;
+    }
+  };
+
+  const markNotificationRead = async (id: string): Promise<boolean> => {
+    try {
+      const success = await DatabaseService.updateNotification(id, { read: true });
+      if (success) {
+        const updatedNotifications = await DatabaseService.getNotifications();
+        setNotifications(updatedNotifications);
+      }
+      return success;
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+      return false;
+    }
+  };
+
+  const clearAllNotifications = async (): Promise<boolean> => {
+    try {
+      const success = await DatabaseService.clearAllNotifications();
+      if (success) {
+        setNotifications([]);
+      }
+      return success;
+    } catch (error) {
+      console.error('Error clearing notifications:', error);
+      return false;
+    }
+  };
+
+  const exportReports = (type: string, timeRange: string) => {
+    console.log(`Exporting ${type} reports for ${timeRange}`);
+    // Implementation for export functionality
+  };
+
+  const exportInvoices = () => {
+    console.log('Exporting invoices');
+    // Implementation for invoice export
+  };
+
+  // حساب الإحصائيات
+  const stats: BotStats = {
+    totalSubscribers: subscribers.length,
+    activeSubscribers: subscribers.filter(s => s.isActive).length,
+    totalCommands: 0,
+    activeTasks: tasks.filter(t => t.status === 'active').length,
+    totalRevenue: invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + i.amount, 0),
+    monthlyRevenue: invoices.filter(i => i.status === 'paid' && new Date(i.createdAt).getMonth() === new Date().getMonth()).reduce((sum, i) => sum + i.amount, 0),
+    commandUsage: 0,
+    taskCompletion: 0
+  };
+
+  const revenueData = mockData.revenueData;
+  const subscriberData = mockData.subscriberData;
+  const commandUsageData = mockData.commandUsageData;
+  const taskCompletionData = mockData.taskCompletionData;
+
+  const contextValue: BotContextType = {
+    stats,
+    subscribers,
+    tasks,
+    invoices,
+    settings,
+    notifications,
+    revenueData,
+    subscriberData,
+    commandUsageData,
+    taskCompletionData,
+    addTask,
+    updateTask,
+    deleteTask,
+    createInvoice,
+    updateInvoice,
+    updateSettings,
+    testBotConnection,
+    addNotification,
+    markNotificationRead,
+    clearAllNotifications,
+    exportReports,
+    exportInvoices,
+    addSubscriberFromTelegram,
+    simulateWebhookMessage,
+    updateSubscriber,
+    deleteSubscriber,
+    addSubscriber,
+    sendTaskToTechnician,
+    sendInvoiceToTechnician,
+    sendLocationToTechnician,
+    sendDirectMessageToTechnician,
+    sendCustomTaskToTechnicians,
+    startTelegramPolling,
+    stopTelegramPolling,
+    isPolling,
+    clearWebhook,
+    loading
+  };
+
+  return (
+    <BotContext.Provider value={contextValue}>
+      {children}
+    </BotContext.Provider>
+  );
+};
+
+export const useBotContext = () => {
+  const context = useContext(BotContext);
+  if (context === undefined) {
+    throw new Error('useBotContext must be used within a BotProvider');
+  }
+  return context;
+};
