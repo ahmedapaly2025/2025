@@ -1,5 +1,6 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { User, AdminProfile, PasswordResetRequest } from '../types';
+import { DatabaseService } from '../services/database';
 
 interface AuthContextType {
   user: User | null;
@@ -94,38 +95,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem('taskManager_user');
   };
 
-  const getProfile = (): AdminProfile | null => {
-    const storedProfile = localStorage.getItem('taskManager_adminProfile');
-    return storedProfile ? JSON.parse(storedProfile) : null;
+  const getProfile = async (): AdminProfile | null => {
+    try {
+      return await DatabaseService.getAdminProfile();
+    } catch (error) {
+      console.error('Error getting profile:', error);
+      return null;
+    }
   };
 
   const updateProfile = async (profileUpdates: Partial<AdminProfile>): Promise<boolean> => {
     try {
-      const currentProfile = getProfile();
-      if (!currentProfile) return false;
-
-      const updatedProfile: AdminProfile = {
-        ...currentProfile,
-        ...profileUpdates,
-        updatedAt: new Date().toISOString(),
-      };
-
-      localStorage.setItem('taskManager_adminProfile', JSON.stringify(updatedProfile));
-
-      // Update current user session
-      if (user) {
-        const updatedUser: User = {
-          ...user,
-          fullName: updatedProfile.fullName,
-          email: updatedProfile.email,
-          username: updatedProfile.username,
-          updatedAt: updatedProfile.updatedAt,
-        };
-        setUser(updatedUser);
-        localStorage.setItem('taskManager_user', JSON.stringify(updatedUser));
+      const success = await DatabaseService.updateAdminProfile(profileUpdates);
+      
+      if (success && user) {
+        const updatedProfile = await DatabaseService.getAdminProfile();
+        if (updatedProfile) {
+          const updatedUser: User = {
+            ...user,
+            fullName: updatedProfile.fullName,
+            email: updatedProfile.email,
+            username: updatedProfile.username,
+            updatedAt: updatedProfile.updatedAt,
+          };
+          setUser(updatedUser);
+          localStorage.setItem('taskManager_user', JSON.stringify(updatedUser));
+        }
       }
 
-      return true;
+      return success;
     } catch (error) {
       console.error('Error updating profile:', error);
       return false;

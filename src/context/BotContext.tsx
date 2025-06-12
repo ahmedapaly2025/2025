@@ -1,7 +1,8 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { generateBotMockData } from '../utils/botMockData';
 import { Subscriber, Task, Invoice, BotStats, BotSettings, Notification, Language } from '../types';
+import { generateBotMockData } from '../utils/botMockData';
 import { useTranslation } from '../utils/translations';
+import { DatabaseService } from '../services/database';
 
 interface BotContextType {
   stats: BotStats;
@@ -57,6 +58,7 @@ interface BotContextType {
   stopTelegramPolling: () => void;
   isPolling: boolean;
   clearWebhook: () => Promise<boolean>;
+  loading: boolean;
 }
 
 const BotContext = createContext<BotContextType | undefined>(undefined);
@@ -64,39 +66,24 @@ const BotContext = createContext<BotContextType | undefined>(undefined);
 export const BotProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const mockData = generateBotMockData();
   
-  const [subscribers, setSubscribers] = useState<Subscriber[]>(() => {
-    const saved = localStorage.getItem('taskManager_subscribers');
-    return saved ? JSON.parse(saved) : [];
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  
+  const [tasks, setTasks] = useState<Task[]>([]);
+  
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  
+  const [settings, setSettings] = useState<BotSettings>({
+    botToken: '',
+    botUsername: '',
+    webhookUrl: '',
+    isConnected: false,
+    lastSync: '',
+    notificationsEnabled: true,
+    soundEnabled: false,
+    language: 'ar',
   });
   
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const saved = localStorage.getItem('taskManager_tasks');
-    return saved ? JSON.parse(saved) : [];
-  });
-  
-  const [invoices, setInvoices] = useState<Invoice[]>(() => {
-    const saved = localStorage.getItem('taskManager_invoices');
-    return saved ? JSON.parse(saved) : [];
-  });
-  
-  const [settings, setSettings] = useState<BotSettings>(() => {
-    const saved = localStorage.getItem('taskManager_settings');
-    return saved ? JSON.parse(saved) : {
-      botToken: '',
-      botUsername: '',
-      webhookUrl: '',
-      isConnected: false,
-      lastSync: '',
-      notificationsEnabled: true,
-      soundEnabled: false,
-      language: 'ar',
-    };
-  });
-  
-  const [notifications, setNotifications] = useState<Notification[]>(() => {
-    const saved = localStorage.getItem('taskManager_notifications');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const [isPolling, setIsPolling] = useState(false);
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
@@ -105,27 +92,43 @@ export const BotProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // 🔥 CRITICAL: نظام منع التكرار المطلق - محسن ومبسط
   const [processedUserIds, setProcessedUserIds] = useState<Set<string>>(new Set());
   const [lastMessageIds, setLastMessageIds] = useState<Map<string, number>>(new Map());
+  const [loading, setLoading] = useState(true);
 
-  // حفظ البيانات في localStorage عند التغيير
+  // تحميل البيانات من قاعدة البيانات عند التحميل الأول
   useEffect(() => {
-    localStorage.setItem('taskManager_subscribers', JSON.stringify(subscribers));
-  }, [subscribers]);
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        const [
+          subscribersData,
+          tasksData,
+          invoicesData,
+          notificationsData,
+          settingsData
+        ] = await Promise.all([
+          DatabaseService.getSubscribers(),
+          DatabaseService.getTasks(),
+          DatabaseService.getInvoices(),
+          DatabaseService.getNotifications(),
+          DatabaseService.getBotSettings()
+        ]);
 
-  useEffect(() => {
-    localStorage.setItem('taskManager_tasks', JSON.stringify(tasks));
-  }, [tasks]);
+        setSubscribers(subscribersData);
+        setTasks(tasksData);
+        setInvoices(invoicesData);
+        setNotifications(notificationsData);
+        if (settingsData) {
+          setSettings(settingsData);
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  useEffect(() => {
-    localStorage.setItem('taskManager_invoices', JSON.stringify(invoices));
-  }, [invoices]);
-
-  useEffect(() => {
-    localStorage.setItem('taskManager_settings', JSON.stringify(settings));
-  }, [settings]);
-
-  useEffect(() => {
-    localStorage.setItem('taskManager_notifications', JSON.stringify(notifications));
-  }, [notifications]);
+    loadData();
+  }, []);
 
   // تحديث قائمة المستخدمين المسجلين عند تغيير المشتركين
   useEffect(() => {
@@ -772,403 +775,89 @@ export const BotProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
-  const updateSubscriber = (id: string, updates: Partial<Subscriber>) => {
-    setSubscribers(prev => prev.map(sub => 
-      sub.id === id ? { ...sub, ...updates } : sub
-    ));
-    
-    addNotification({
-      type: 'system',
-      title: '✅ تم تحديث بيانات الفني',
-      message: `تم تحديث بيانات الفني بنجاح`,
-    });
-  };
-
-  const deleteSubscriber = (id: string) => {
-    const subscriber = subscribers.find(s => s.id === id);
-    if (subscriber) {
-      // تنظيف جميع البيانات المرتبطة
-      setProcessedUserIds(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(subscriber.userId);
-        return newSet;
-      });
-      
-      setLastMessageIds(prev => {
-        const newMap = new Map(prev);
-        newMap.delete(subscriber.userId);
-        return newMap;
-      });
-    }
-    
-    setSubscribers(prev => prev.filter(sub => sub.id !== id));
-    
-    addNotification({
-      type: 'system',
-      title: '🗑️ تم حذف الفني',
-      message: 'تم حذف الفني من النظام نهائياً'
-    });
-  };
-
-  const addSubscriber = (subscriber: Omit<Subscriber, 'id'>) => {
-    const newSubscriber: Subscriber = {
-      ...subscriber,
-      id: `manual_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    };
-    
-    setSubscribers(prev => [...prev, newSubscriber]);
-    
-    addNotification({
-      type: 'system',
-      title: '👤 تم إضافة فني جديد',
-      message: `تم إضافة ${newSubscriber.firstName} ${newSubscriber.lastName || ''} بنجاح`
-    });
-  };
-
-  const addTask = (task: Omit<Task, 'id' | 'createdAt' | 'completedBy'>) => {
-    const newTask: Task = {
-      ...task,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      completedBy: [],
-    };
-    setTasks(prev => [...prev, newTask]);
-    
-    addNotification({
-      type: 'system',
-      title: '✅ تم إنشاء مهمة جديدة',
-      message: `تم إنشاء مهمة جديدة: ${task.title}`,
-    });
-
-    // إرسال المهمة تلقائياً إذا كان البوت متصل
-    if (settings.isConnected && settings.botToken && isPolling) {
-      setTimeout(() => {
-        sendTaskToTechnician(newTask.id, false);
-      }, 3000);
-    }
-  };
-
-  const updateTask = (id: string, updates: Partial<Task>) => {
-    setTasks(prev => prev.map(task => 
-      task.id === id ? { ...task, ...updates } : task
-    ));
-  };
-
-  const deleteTask = (id: string) => {
-    setTasks(prev => prev.filter(task => task.id !== id));
-  };
-
-  const createInvoice = (invoice: Omit<Invoice, 'id' | 'createdAt'>) => {
-    const newInvoice: Invoice = {
-      ...invoice,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-    };
-    setInvoices(prev => [...prev, newInvoice]);
-    
-    addNotification({
-      type: 'system',
-      title: '💰 تم إنشاء فاتورة جديدة',
-      message: `تم إنشاء فاتورة جديدة بمبلغ ${invoice.amount} ريال`,
-    });
-
-    // إرسال الفاتورة تلقائياً إذا كان البوت متصل
-    if (settings.isConnected && settings.botToken && isPolling) {
-      setTimeout(() => {
-        sendInvoiceToTechnician(newInvoice.id);
-      }, 3000);
-    }
-  };
-
-  const updateInvoice = (id: string, updates: Partial<Invoice>) => {
-    setInvoices(prev => prev.map(inv => 
-      inv.id === id ? { ...inv, ...updates } : inv
-    ));
-  };
-
-  const updateSettings = (newSettings: Partial<BotSettings>) => {
-    setSettings(prev => ({ ...prev, ...newSettings }));
-  };
-
-  const testBotConnection = async (): Promise<boolean> => {
+  const addSubscriber = async (subscriber: Omit<Subscriber, 'id' | 'createdAt' | 'updatedAt'>): Promise<boolean> => {
     try {
-      const response = await fetch(`https://api.telegram.org/bot${settings.botToken}/getMe`);
-      const data = await response.json();
-      
-      if (data.ok) {
-        setSettings(prev => ({ 
-          ...prev, 
-          isConnected: true,
-          botUsername: data.result.username,
-          lastSync: new Date().toISOString()
-        }));
-        
-        addNotification({
-          type: 'system',
-          title: '✅ اتصال ناجح',
-          message: `تم الاتصال بالبوت @${data.result.username} بنجاح!`
-        });
-        
-        return true;
-      } else {
-        setSettings(prev => ({ ...prev, isConnected: false }));
-        return false;
+      const success = await DatabaseService.addSubscriber(subscriber);
+      if (success) {
+        const updatedSubscribers = await DatabaseService.getSubscribers();
+        setSubscribers(updatedSubscribers);
       }
+      return success;
     } catch (error) {
-      setSettings(prev => ({ ...prev, isConnected: false }));
+      console.error('Error adding subscriber:', error);
       return false;
     }
   };
 
-  const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
-    const newNotification: Notification = {
-      ...notification,
-      id: Date.now().toString(),
-      timestamp: new Date().toISOString(),
-      read: false,
-    };
-    
-    setNotifications(prev => [newNotification, ...prev.slice(0, 49)]);
-    
-    if (settings.soundEnabled && settings.notificationsEnabled) {
-      try {
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
-        
-        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.2);
-      } catch (error) {
-        console.log('لا يمكن تشغيل صوت الإشعار');
+  const updateSubscriber = async (id: string, updates: Partial<Subscriber>): Promise<boolean> => {
+    try {
+      const success = await DatabaseService.updateSubscriber(id, updates);
+      if (success) {
+        const updatedSubscribers = await DatabaseService.getSubscribers();
+        setSubscribers(updatedSubscribers);
       }
+      return success;
+    } catch (error) {
+      console.error('Error updating subscriber:', error);
+      return false;
     }
   };
 
-  const markNotificationRead = (id: string) => {
-    setNotifications(prev => prev.map(notif => 
-      notif.id === id ? { ...notif, read: true } : notif
-    ));
-  };
-
-  const clearAllNotifications = () => {
-    setNotifications([]);
-  };
-
-  // Export functions
-  const exportReports = (type: string, timeRange: string) => {
-    const currentDate = new Date().toISOString().split('T')[0];
-    let csvContent = '';
-    let filename = '';
-
-    switch (type) {
-      case 'technicians':
-        csvContent = generateTechniciansReport();
-        filename = `تقرير_الفنيين_${currentDate}.csv`;
-        break;
-      case 'tasks':
-        csvContent = generateTasksReport();
-        filename = `تقرير_المهام_${currentDate}.csv`;
-        break;
-      case 'financial':
-        csvContent = generateFinancialReport();
-        filename = `التقرير_المالي_${currentDate}.csv`;
-        break;
-      default:
-        csvContent = generateOverviewReport();
-        filename = `تقرير_عام_${currentDate}.csv`;
-    }
-
-    downloadCSV(csvContent, filename);
-    
-    addNotification({
-      type: 'system',
-      title: '📊 تم تصدير التقرير',
-      message: `تم تصدير ${filename} بنجاح`,
-    });
-  };
-
-  const exportInvoices = () => {
-    const currentDate = new Date().toISOString().split('T')[0];
-    const csvContent = generateFinancialReport();
-    const filename = `الفواتير_${currentDate}.csv`;
-    downloadCSV(csvContent, filename);
-    
-    addNotification({
-      type: 'system',
-      title: '💰 تم تصدير الفواتير',
-      message: `تم تصدير ${filename} بنجاح`,
-    });
-  };
-
-  const generateTechniciansReport = () => {
-    const headers = ['اسم الفني', 'اسم المستخدم', 'Telegram ID', 'المهنة', 'المهام المكتملة', 'إجمالي الأرباح', 'تاريخ الانضمام', 'الحالة'];
-    const rows = subscribers.map(sub => [
-      `${sub.firstName} ${sub.lastName || ''}`,
-      sub.username,
-      sub.userId,
-      sub.profession || 'غير محدد',
-      sub.tasksCompleted.toString(),
-      `${sub.totalEarnings} ريال`,
-      new Date(sub.joinedAt).toLocaleDateString('ar'),
-      sub.isActive ? 'نشط' : 'غير نشط'
-    ]);
-    
-    return [headers, ...rows].map(row => row.join(',')).join('\n');
-  };
-
-  const generateTasksReport = () => {
-    const headers = ['اسم المهمة', 'النوع', 'التكلفة المتوقعة', 'تاريخ البداية', 'تاريخ الانتهاء', 'الحالة', 'الفنيين المخصصين', 'الفني المقبول', 'يحتوي على موقع', 'الإرسال التلقائي'];
-    const rows = tasks.map(task => {
-      const acceptedTechnician = task.acceptedBy ? subscribers.find(s => s.id === task.acceptedBy) : null;
-      return [
-        task.title,
-        task.type === 'individual' ? 'فردية' : 'جماعية',
-        `${task.expectedCost} ريال`,
-        new Date(task.startDate).toLocaleDateString('ar'),
-        new Date(task.endDate).toLocaleDateString('ar'),
-        task.status === 'active' ? 'نشطة' : task.status === 'completed' ? 'مكتملة' : 'منتهية',
-        task.type === 'group' ? 'جميع الفنيين' : task.targetUsers.length.toString(),
-        acceptedTechnician ? `${acceptedTechnician.firstName} ${acceptedTechnician.lastName || ''}` : 'لا يوجد',
-        task.locationUrl ? 'نعم' : 'لا',
-        task.autoSendLocation ? 'نعم' : 'لا'
-      ];
-    });
-    
-    return [headers, ...rows].map(row => row.join(',')).join('\n');
-  };
-
-  const generateFinancialReport = () => {
-    const headers = ['رقم الفاتورة', 'الفني', 'المهمة', 'المبلغ', 'التكلفة الفعلية', 'العمولة', 'طريقة دفع العميل', 'طريقة استلام العمولة', 'الحالة', 'تاريخ الإنشاء', 'تاريخ البداية', 'تاريخ الانتهاء'];
-    const rows = invoices.map(invoice => {
-      const technician = subscribers.find(s => s.id === invoice.subscriberId);
-      return [
-        invoice.id,
-        technician ? `${technician.firstName} ${technician.lastName || ''}` : 'غير محدد',
-        invoice.taskTitle || 'غير محدد',
-        `${invoice.amount} ريال`,
-        invoice.actualCost ? `${invoice.actualCost} ريال` : 'غير محدد',
-        invoice.commission ? `${invoice.commission} ريال` : 'غير محدد',
-        invoice.clientPaymentMethod || 'غير محدد',
-        invoice.commissionReceivedMethod || 'غير محدد',
-        invoice.status === 'paid' ? 'مدفوعة' : invoice.status === 'pending' ? 'معلقة' : 'ملغية',
-        new Date(invoice.createdAt).toLocaleDateString('ar'),
-        invoice.startDate ? new Date(invoice.startDate).toLocaleDateString('ar') : 'غير محدد',
-        invoice.endDate ? new Date(invoice.endDate).toLocaleDateString('ar') : 'غير محدد'
-      ];
-    });
-    
-    return [headers, ...rows].map(row => row.join(',')).join('\n');
-  };
-
-  const generateOverviewReport = () => {
-    const headers = ['المؤشر', 'القيمة'];
-    const totalRevenue = subscribers.reduce((sum, s) => sum + s.totalEarnings, 0);
-    const totalInvoiceAmount = invoices.reduce((sum, i) => sum + i.amount, 0);
-    const totalCommissions = invoices.reduce((sum, i) => sum + (i.commission || 0), 0);
-    const activeTasks = tasks.filter(t => t.status === 'active').length;
-    const completedTasks = tasks.filter(t => t.status === 'completed').length;
-    
-    const rows = [
-      ['إجمالي الفنيين', subscribers.length.toString()],
-      ['الفنيين النشطين', subscribers.filter(s => s.isActive).length.toString()],
-      ['إجمالي المهام', tasks.length.toString()],
-      ['المهام النشطة', activeTasks.toString()],
-      ['المهام المكتملة', completedTasks.toString()],
-      ['إجمالي أرباح الفنيين', `${totalRevenue} ريال`],
-      ['إجمالي مبالغ الفواتير', `${totalInvoiceAmount} ريال`],
-      ['إجمالي العمولات', `${totalCommissions} ريال`],
-      ['عدد الفواتير المدفوعة', invoices.filter(i => i.status === 'paid').length.toString()],
-      ['عدد الفواتير المعلقة', invoices.filter(i => i.status === 'pending').length.toString()]
-    ];
-    
-    return [headers, ...rows].map(row => row.join(',')).join('\n');
-  };
-
-  const downloadCSV = (csvContent: string, filename: string) => {
-    const BOM = '\uFEFF';
-    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', filename);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+  const deleteSubscriber = async (id: string): Promise<boolean> => {
+    try {
+      const success = await DatabaseService.deleteSubscriber(id);
+      if (success) {
+        const updatedSubscribers = await DatabaseService.getSubscribers();
+        setSubscribers(updatedSubscribers);
+      }
+      return success;
+    } catch (error) {
+      console.error('Error deleting subscriber:', error);
+      return false;
     }
   };
 
-  // حساب الإحصائيات الحقيقية من البيانات الفعلية
-  const realStats = {
-    totalSubscribers: subscribers.length,
-    activeSubscribers: subscribers.filter(s => s.isActive).length,
-    totalCommands: 0, // لا توجد أوامر بعد الآن
-    activeTasks: tasks.filter(t => t.status === 'active').length,
-    totalRevenue: subscribers.reduce((sum, s) => sum + s.totalEarnings, 0),
-    monthlyRevenue: invoices.reduce((sum, i) => sum + (i.commission || 0), 0),
-    commandUsage: 0, // لا توجد أوامر بعد الآن
-    taskCompletion: tasks.length > 0 ? (tasks.filter(t => t.status === 'completed').length / tasks.length) * 100 : 0,
+  const addTask = async (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Promise<boolean> => {
+    try {
+      const success = await DatabaseService.addTask(task);
+      if (success) {
+        const updatedTasks = await DatabaseService.getTasks();
+        setTasks(updatedTasks);
+      }
+      return success;
+    } catch (error) {
+      console.error('Error adding task:', error);
+      return false;
+    }
   };
 
-  const contextValue: BotContextType = {
-    ...mockData,
-    stats: realStats,
-    subscribers,
-    tasks,
-    invoices,
-    settings,
-    notifications,
-    isPolling,
-    addTask,
-    updateTask,
-    deleteTask,
-    createInvoice,
-    updateInvoice,
-    updateSettings,
-    testBotConnection,
-    addNotification,
-    markNotificationRead,
-    clearAllNotifications,
-    exportReports,
-    exportInvoices,
-    addSubscriberFromTelegram,
-    simulateWebhookMessage,
-    updateSubscriber,
-    deleteSubscriber,
-    addSubscriber,
-    sendTaskToTechnician,
-    sendInvoiceToTechnician,
-    sendLocationToTechnician,
-    sendDirectMessageToTechnician,
-    sendCustomTaskToTechnicians,
-    startTelegramPolling,
-    stopTelegramPolling,
-    clearWebhook,
+  const updateTask = async (id: string, updates: Partial<Task>): Promise<boolean> => {
+    try {
+      const success = await DatabaseService.updateTask(id, updates);
+      if (success) {
+        const updatedTasks = await DatabaseService.getTasks();
+        setTasks(updatedTasks);
+      }
+      return success;
+    } catch (error) {
+      console.error('Error updating task:', error);
+      return false;
+    }
   };
 
-  return (
-    <BotContext.Provider value={contextValue}>
-      {children}
-    </BotContext.Provider>
-  );
-};
+  const deleteTask = async (id: string): Promise<boolean> => {
+    try {
+      const success = await DatabaseService.deleteTask(id);
+      if (success) {
+        const updatedTasks = await DatabaseService.getTasks();
+        setTasks(updatedTasks);
+      }
+      return success;
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      return false;
+    }
+  };
 
-export const useBotContext = () => {
-  const context = useContext(BotContext);
-  if (context === undefined) {
-    throw new Error('useBotContext must be used within a BotProvider');
-  }
-  return context;
-};
+  const createInvoice = async (invoice: Omit<Invoice, 'id' | 'createdAt' | 'updatedAt' | 'subscriberName'>): Promise<boolean> => {
+    try {

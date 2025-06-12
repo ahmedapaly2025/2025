@@ -14,6 +14,7 @@ import SettingsManager from './components/SettingsManager';
 import AnalyticsManager from './components/AnalyticsManager';
 import LogsManager from './components/LogsManager';
 import AdminProfileManager from './components/AdminProfileManager';
+import LoadingSpinner from './components/LoadingSpinner';
 
 export type ActiveView = 'dashboard' | 'tasks' | 'subscribers' | 'invoices' | 'reports' | 'settings' | 'analytics' | 'logs' | 'profile';
 
@@ -27,7 +28,7 @@ function AppContent() {
   useEffect(() => {
     document.documentElement.dir = direction;
     document.body.className = `${direction} ${isRTL ? 'rtl' : 'ltr'}`;
-    
+
     // Force layout recalculation
     document.body.style.direction = direction;
     document.body.style.textAlign = isRTL ? 'right' : 'left';
@@ -71,7 +72,7 @@ function AppContent() {
           activeView={activeView}
           setActiveView={setActiveView}
         />
-        
+
         {/* Layout Container with proper RTL/LTR ordering */}
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar - positioned based on language direction */}
@@ -84,7 +85,7 @@ function AppContent() {
               setActiveView={setActiveView}
             />
           </div>
-          
+
           {/* Main content */}
           <main className="flex-1 overflow-auto">
             <div className="container-responsive space-responsive">
@@ -92,7 +93,7 @@ function AppContent() {
             </div>
           </main>
         </div>
-        
+
         {/* Mobile sidebar overlay */}
         {sidebarOpen && (
           <div 
