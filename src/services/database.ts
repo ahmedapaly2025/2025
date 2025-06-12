@@ -474,26 +474,26 @@ export class DatabaseService {
         if (insertError) throw insertError;
         
         return {
-          botToken: newData.bot_token,
-          botUsername: newData.bot_username,
-          webhookUrl: newData.webhook_url,
-          isConnected: newData.is_connected,
-          lastSync: newData.last_sync,
-          notificationsEnabled: newData.notifications_enabled,
-          soundEnabled: newData.sound_enabled,
-          language: newData.language,
+          botToken: newData.bot_token || '',
+          botUsername: newData.bot_username || '',
+          webhookUrl: newData.webhook_url || '',
+          isConnected: newData.is_connected || false,
+          lastSync: newData.last_sync || '',
+          notificationsEnabled: newData.notifications_enabled !== false,
+          soundEnabled: newData.sound_enabled || false,
+          language: newData.language || 'ar',
         };
       }
 
       return {
-        botToken: data.bot_token,
-        botUsername: data.bot_username,
-        webhookUrl: data.webhook_url,
-        isConnected: data.is_connected,
-        lastSync: data.last_sync,
-        notificationsEnabled: data.notifications_enabled,
-        soundEnabled: data.sound_enabled,
-        language: data.language,
+        botToken: data.bot_token || '',
+        botUsername: data.bot_username || '',
+        webhookUrl: data.webhook_url || '',
+        isConnected: data.is_connected || false,
+        lastSync: data.last_sync || '',
+        notificationsEnabled: data.notifications_enabled !== false,
+        soundEnabled: data.sound_enabled || false,
+        language: data.language || 'ar',
       };
     } catch (error) {
       console.error('Error fetching bot settings:', error);
