@@ -55,13 +55,13 @@ CREATE TABLE IF NOT EXISTS notifications (
 -- إنشاء جدول إعدادات البوت
 CREATE TABLE IF NOT EXISTS bot_settings (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  bot_token VARCHAR(255),
-  bot_username VARCHAR(255),
-  webhook_url VARCHAR(255),
-  is_connected BOOLEAN DEFAULT false,
-  last_sync TIMESTAMP WITH TIME ZONE,
-  notifications_enabled BOOLEAN DEFAULT true,
-  sound_enabled BOOLEAN DEFAULT false,
+  "botToken" VARCHAR(255),
+  "botUsername" VARCHAR(255),
+  "webhookUrl" VARCHAR(255),
+  "isConnected" BOOLEAN DEFAULT false,
+  "lastSync" TIMESTAMP WITH TIME ZONE,
+  "notificationsEnabled" BOOLEAN DEFAULT true,
+  "soundEnabled" BOOLEAN DEFAULT false,
   language VARCHAR(10) DEFAULT 'ar',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

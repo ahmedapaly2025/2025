@@ -1,4 +1,3 @@
-
 import { supabase } from '../config/supabase';
 import { Subscriber, Task, Invoice, Notification, BotSettings, AdminProfile } from '../types';
 
@@ -381,7 +380,7 @@ export class DatabaseService {
           const { error: tableError } = await supabase
             .from(table)
             .select('count', { count: 'exact', head: true });
-          
+
           tableTests.push({
             table,
             exists: !tableError,
@@ -397,7 +396,7 @@ export class DatabaseService {
       }
 
       const missingTables = tableTests.filter(t => !t.exists);
-      
+
       if (missingTables.length > 0) {
         return {
           success: false,
@@ -430,10 +429,10 @@ export class DatabaseService {
       // قراءة schema من الملف وتنفيذه
       // هذا مثال مبسط - في الواقع قد تحتاج لتنفيذ كل جدول منفصل
       console.log('Creating database tables...');
-      
+
       // يمكنك تنفيذ الـ SQL مباشرة إذا كان لديك صلاحيات
       // أو استخدام Supabase Dashboard لتنفيذ schema.sql
-      
+
       return true;
     } catch (error) {
       console.error('Error creating tables:', error);
@@ -472,7 +471,7 @@ export class DatabaseService {
           .single();
 
         if (insertError) throw insertError;
-        
+
         return {
           botToken: newData.bot_token || '',
           botUsername: newData.bot_username || '',
@@ -575,3 +574,23 @@ export class DatabaseService {
     }
   }
 }
+
+export const testDatabaseConnection = async (): Promise<boolean> => {
+  try {
+    const { data, error } = await supabase
+      .from('bot_settings')
+      .select('id, "botToken"')
+      .limit(1);
+
+    if (error) {
+      console.error('Error fetching bot settings:', error);
+      return false;
+    }
+
+    console.log('✅ Database connection successful!', data);
+    return true;
+  } catch (error) {
+    console.error('❌ Database connection failed:', error);
+    return false;
+  }
+};

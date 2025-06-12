@@ -365,11 +365,15 @@ const TasksManager: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar size={14} className="text-purple-400" />
-                  <span className="text-gray-300">{format(new Date(task.startDate), 'dd/MM/yyyy')}</span>
+                  <span className="text-gray-300">
+                    {task.startDate ? format(new Date(task.startDate), 'dd/MM/yyyy') : (language === 'ar' ? 'غير محدد' : 'Nicht festgelegt')}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar size={14} className="text-red-400" />
-                  <span className="text-gray-300">{format(new Date(task.endDate), 'dd/MM/yyyy')}</span>
+                  <span className="text-gray-300">
+                    {task.endDate ? format(new Date(task.endDate), 'dd/MM/yyyy') : (language === 'ar' ? 'غير محدد' : 'Nicht festgelegt')}
+                  </span>
                 </div>
               </div>
 
@@ -419,7 +423,9 @@ const TasksManager: React.FC = () => {
                 </span>
                 <div className="flex items-center gap-1 text-xs text-gray-500">
                   <Clock size={12} />
-                  <span>{format(new Date(task.createdAt), 'dd/MM/yyyy')}</span>
+                  <span>
+                    {task.createdAt ? format(new Date(task.createdAt), 'dd/MM/yyyy') : (language === 'ar' ? 'غير محدد' : 'Nicht festgelegt')}
+                  </span>
                 </div>
               </div>
             </div>

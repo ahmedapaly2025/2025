@@ -90,6 +90,10 @@ export const translations = {
     ar: 'إضافة',
     de: 'Hinzufügen'
   },
+  update: {
+    ar: 'تحديث',
+    de: 'Aktualisieren'
+  },
   edit: {
     ar: 'تعديل',
     de: 'Bearbeiten'
@@ -191,6 +195,18 @@ export const translations = {
   totalTechnicians: {
     ar: 'إجمالي الفنيين',
     de: 'Gesamte Techniker'
+  },
+  technicianManagementTitle: {
+    ar: 'إدارة الفنيين والحرفيين',
+    de: 'Techniker- und Handwerkerverwaltung'
+  },
+  newTechnician: {
+    ar: 'فني جديد',
+    de: 'Neuer Techniker'
+  },
+  editTechnician: {
+    ar: 'تعديل الفني',
+    de: 'Techniker bearbeiten'
   },
   activeTechnicians: {
     ar: 'الفنيين النشطين',
@@ -719,6 +735,30 @@ export const translations = {
     ar: 'إدارة الفواتير',
     de: 'Rechnungsverwaltung'
   },
+  newInvoice: {
+    ar: 'فاتورة جديدة',
+    de: 'Neue Rechnung'
+  },
+  editInvoice: {
+    ar: 'تعديل الفاتورة',
+    de: 'Rechnung bearbeiten'
+  },
+  deleteInvoice: {
+    ar: 'حذف الفاتورة',
+    de: 'Rechnung löschen'
+  },
+  invoiceCreated: {
+    ar: 'تم إنشاء الفاتورة بنجاح',
+    de: 'Rechnung erfolgreich erstellt'
+  },
+  invoiceUpdated: {
+    ar: 'تم تحديث الفاتورة بنجاح',
+    de: 'Rechnung erfolgreich aktualisiert'
+  },
+  invoiceDeleted: {
+    ar: 'تم حذف الفاتورة بنجاح',
+    de: 'Rechnung erfolgreich gelöscht'
+  },
   createTrackInvoices: {
     ar: 'إنشاء ومتابعة فواتير الفنيين',
     de: 'Techniker-Rechnungen erstellen und verfolgen'
@@ -828,6 +868,18 @@ export const translations = {
   detailedReports: {
     ar: 'التقارير التفصيلية',
     de: 'Detaillierte Berichte'
+  },
+  generateReport: {
+    ar: 'إنتاج التقرير',
+    de: 'Bericht erstellen'
+  },
+  reportGenerated: {
+    ar: 'تم إنتاج التقرير بنجاح',
+    de: 'Bericht erfolgreich erstellt'
+  },
+  noDataAvailable: {
+    ar: 'لا توجد بيانات متاحة',
+    de: 'Keine Daten verfügbar'
   },
   comprehensiveReports: {
     ar: 'تقارير شاملة حول أداء البوت والعمولات',
@@ -1273,9 +1325,9 @@ export const translations = {
     ar: 'عرض البطاقات',
     de: 'Kartenansicht'
   },
-  details: {
-    ar: 'التفاصيل',
-    de: 'Details'
+  taskDetails: {
+    ar: 'تفاصيل المهمة',
+    de: 'Aufgabendetails'
   },
   showDetails: {
     ar: 'عرض التفاصيل',
@@ -1365,9 +1417,9 @@ export const translations = {
     ar: 'اختياري',
     de: 'Optional'
   },
-  required: {
-    ar: 'مطلوب',
-    de: 'Erforderlich'
+  fieldRequired: {
+    ar: 'حقل مطلوب',
+    de: 'Pflichtfeld'
   },
   enabled: {
     ar: 'مفعل',
@@ -1401,9 +1453,9 @@ export const translations = {
     ar: 'متاح',
     de: 'Frei'
   },
-  working: {
-    ar: 'يعمل',
-    de: 'Arbeitet'
+  currentlyWorking: {
+    ar: 'يعمل حالياً',
+    de: 'Arbeitet derzeit'
   },
   notWorking: {
     ar: 'لا يعمل',
@@ -1633,9 +1685,9 @@ export const translations = {
     ar: 'نسبة مئوية',
     de: 'Prozentsatz'
   },
-  currency: {
-    ar: 'عملة',
-    de: 'Währung'
+  currencyType: {
+    ar: 'نوع العملة',
+    de: 'Währungstyp'
   },
   dateTime: {
     ar: 'التاريخ والوقت',
