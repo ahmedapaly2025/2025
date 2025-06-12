@@ -126,7 +126,7 @@ export const translations = {
     ar: 'إرسال',
     de: 'Senden'
   },
-  
+
   // Bot Status
   botConnected: {
     ar: 'البوت متصل ✅',
@@ -349,11 +349,11 @@ export const translations = {
   // Common Phrases
   riyal: {
     ar: 'ريال',
-    de: 'Riyal'
+    de: 'Euro'
   },
-  currency: {
+  currencyType: {
     ar: 'ريال',
-    de: 'Riyal'
+    de: 'Euro'
   },
   yes: {
     ar: 'نعم',
@@ -747,7 +747,7 @@ export const translations = {
     ar: 'حذف الفاتورة',
     de: 'Rechnung löschen'
   },
-  invoiceCreated: {
+  invoiceCreatedSuccess: {
     ar: 'تم إنشاء الفاتورة بنجاح',
     de: 'Rechnung erfolgreich erstellt'
   },
@@ -829,7 +829,7 @@ export const translations = {
   },
   customCommission: {
     ar: 'العمولة الخاصة (ريال)',
-    de: 'Spezielle Provision (Riyal)'
+    de: 'Spezielle Provision (Euro)'
   },
   selectPaymentMethod: {
     ar: 'اختر طريقة الدفع',
@@ -1091,8 +1091,7 @@ export const translations = {
   // Logs Manager
   activityLogs: {
     ar: 'سجل النشاطات',
-    de: 'Aktivitätsprotokolle'
-  },
+    de: 'Aktivitätsprotokolle'  },
   trackAllActivities: {
     ar: 'تتبع جميع الأنشطة والأحداث في النظام',
     de: 'Alle Aktivitäten und Ereignisse im System verfolgen'
@@ -1181,11 +1180,11 @@ export const translations = {
   // Bot Messages (updated with new format)
   taskAvailable: {
     ar: '📌 مهمة جديدة متاحة:\n\n🔧 {title}\n📝 {description}\n\n💰 التكلفة المتوقعة: {cost} ريال\n📅 تاريخ البداية: {startDate}\n⏰ تاريخ الانتهاء: {endDate}\n\n📝',
-    de: '📌 Neue Aufgabe verfügbar:\n\n🔧 {title}\n📝 {description}\n\n💰 Erwartete Kosten: {cost} Riyal\n📅 Startdatum: {startDate}\n⏰ Enddatum: {endDate}\n\n📝 Zur Bestätigung des Auftrags, schreibe:\nAngenommen\n\n📝 '
+    de: '📌 Neue Aufgabe verfügbar:\n\n🔧 {title}\n📝 {description}\n\n💰 Erwartete Kosten: {cost} Euro\n📅 Startdatum: {startDate}\n⏰ Enddatum: {endDate}\n\n📝 Zur Bestätigung des Auftrags, schreibe:\nAngenommen\n\n📝 '
   },
   taskAcceptedMessage: {
     ar: '✅ رائع! تم قبول المهمة بنجاح\n\n🔧 {title}\n💰 التكلفة: {cost} ريال\n\n📍 سيتم إرسال موقع المهمة قريباً من الإدارة.',
-    de: '✅ Großartig! Aufgabe erfolgreich angenommen\n\n🔧 {title}\n💰 Kosten: {cost} Riyal\n\n📍 Der Aufgabenstandort wird bald von der Verwaltung gesendet.'
+    de: '✅ Großartig! Aufgabe erfolgreich angenommen\n\n🔧 {title}\n💰 Kosten: {cost} Euro\n\n📍 Der Aufgabenstandort wird bald von der Verwaltung gesendet.'
   },
   taskRejectedMessage: {
     ar: '❌ لا مشكلة!\n\n🔧 {title}\n\n💪 سنرسل لك مهمة أخرى قريباً!',
@@ -1818,16 +1817,16 @@ export const useTranslation = (language: Language) => {
       console.warn(`Translation missing for key: ${key}`);
       return key;
     }
-    
+
     let text = translation[language] || translation.ar || key;
-    
+
     // Replace variables in text
     if (params) {
       Object.keys(params).forEach(param => {
         text = text.replace(new RegExp(`{${param}}`, 'g'), params[param]);
       });
     }
-    
+
     return text;
   };
 
