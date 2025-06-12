@@ -349,7 +349,7 @@ export const translations = {
   // Common Phrases
   riyal: {
     ar: 'ريال',
-    de: '€'
+    de: 'Euro'
   },
   yes: {
     ar: 'نعم',
@@ -865,49 +865,105 @@ export const translations = {
     ar: 'التقارير التفصيلية',
     de: 'Detaillierte Berichte'
   },
-  generateReport: {
-    ar: 'إنتاج التقرير',
-    de: 'Bericht erstellen'
+  comprehensiveReports: {
+    ar: 'تقارير شاملة حول أداء النظام والإحصائيات',
+    de: 'Umfassende Berichte über Systemleistung und Statistiken'
+  },
+  exportReport: {
+    ar: 'تصدير التقرير',
+    de: 'Bericht exportieren'
+  },
+  timePeriod: {
+    ar: 'الفترة الزمنية',
+    de: 'Zeitraum'
+  },
+  dailyReport: {
+    ar: 'تقرير يومي',
+    de: 'Täglicher Bericht'
+  },
+  weeklyReport: {
+    ar: 'تقرير أسبوعي',
+    de: 'Wöchentlicher Bericht'
+  },
+  monthlyReport: {
+    ar: 'تقرير شهري',
+    de: 'Monatlicher Bericht'
+  },
+  salesCount: {
+    ar: 'عدد المبيعات',
+    de: 'Anzahl Verkäufe'
+  },
+  techniciansCount: {
+    ar: 'عدد الفنيين',
+    de: 'Anzahl Techniker'
+  },
+  invoicesCount: {
+    ar: 'عدد الفواتير',
+    de: 'Anzahl Rechnungen'
+  },
+  totalRevenues: {
+    ar: 'إجمالي الإيرادات',
+    de: 'Gesamteinnahmen'
+  },
+  completedTasksCount: {
+    ar: 'عدد المهام المكتملة',
+    de: 'Anzahl abgeschlossener Aufgaben'
+  },
+  incompleteTasksCount: {
+    ar: 'عدد المهام غير المكتملة',
+    de: 'Anzahl unvollständiger Aufgaben'
+  },
+  cancelledTasksCount: {
+    ar: 'عدد المهام الملغية',
+    de: 'Anzahl stornierter Aufgaben'
+  },
+  statisticsOverview: {
+    ar: 'نظرة عامة على الإحصائيات',
+    de: 'Statistik-Übersicht'
+  },
+  performanceMetrics: {
+    ar: 'مقاييس الأداء',
+    de: 'Leistungskennzahlen'
   },
   reportGenerated: {
-    ar: 'تم إنتاج التقرير بنجاح',
+    ar: 'تم إنشاء التقرير بنجاح',
     de: 'Bericht erfolgreich erstellt'
   },
   noDataAvailable: {
     ar: 'لا توجد بيانات متاحة',
     de: 'Keine Daten verfügbar'
   },
-  comprehensiveReports: {
-    ar: 'تقارير شاملة حول أداء البوت والعمولات',
-    de: 'Umfassende Berichte über Bot-Leistung und Provisionen'
+  dataFrom: {
+    ar: 'البيانات من',
+    de: 'Daten von'
   },
-  exportReport: {
-    ar: 'تصدير التقرير',
-    de: 'Bericht exportieren'
+  dataTo: {
+    ar: 'إلى',
+    de: 'bis'
   },
-  reportType: {
-    ar: 'نوع التقرير',
-    de: 'Berichtstyp'
+  averagePerDay: {
+    ar: 'المتوسط اليومي',
+    de: 'Tagesdurchschnitt'
   },
-  overviewReport: {
-    ar: 'النظرة العامة',
-    de: 'Übersichtsbericht'
+  averagePerWeek: {
+    ar: 'المتوسط الأسبوعي',
+    de: 'Wochendurchschnitt'
   },
-  techniciansReport: {
-    ar: 'تقرير الفنيين',
-    de: 'Techniker-Bericht'
+  averagePerMonth: {
+    ar: 'المتوسط الشهري',
+    de: 'Monatsdurchschnitt'
   },
-  tasksReport: {
-    ar: 'تقرير المهام',
-    de: 'Aufgaben-Bericht'
+  growthRate: {
+    ar: 'معدل النمو',
+    de: 'Wachstumsrate'
   },
-  financialReport: {
-    ar: 'التقرير المالي',
-    de: 'Finanzbericht'
+  comparisonToPrevious: {
+    ar: 'مقارنة بالفترة السابقة',
+    de: 'Vergleich zum Vormonat'
   },
-  commandsReport: {
-    ar: 'تقرير الأوامر',
-    de: 'Befehls-Bericht'
+  euro: {
+    ar: 'يورو',
+    de: 'Euro'
   },
   assignedTasks: {
     ar: 'المهام الموكلة',

@@ -53,9 +53,9 @@ const InvoicesManager: React.FC = () => {
       invoice.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (subscriber && subscriber.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (invoice.taskTitle && invoice.taskTitle.toLowerCase().includes(searchTerm.toLowerCase()));
-    
+
     const matchesStatus = statusFilter === 'all' || invoice.status === statusFilter;
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -82,7 +82,7 @@ const InvoicesManager: React.FC = () => {
           ? newInvoice.customCommissionReceived 
           : newInvoice.commissionReceivedMethod,
       };
-      
+
       createInvoice(invoiceData);
       resetForm();
       setShowAddModal(false);
@@ -233,7 +233,7 @@ const InvoicesManager: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-emerald-500/20 rounded-lg">
@@ -241,11 +241,11 @@ const InvoicesManager: React.FC = () => {
             </div>
             <div>
               <p className="text-gray-400 text-sm">{t('totalAmount')}</p>
-              <p className="text-xl font-bold">{totalAmount.toLocaleString()} {t('riyal')}</p>
+              <p className="text-xl font-bold">{totalAmount.toLocaleString()} {language === 'de' ? t('euro') : t('riyal')}</p>
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-green-500/20 rounded-lg">
@@ -253,11 +253,11 @@ const InvoicesManager: React.FC = () => {
             </div>
             <div>
               <p className="text-gray-400 text-sm">{t('paidAmount')}</p>
-              <p className="text-xl font-bold">{paidAmount.toLocaleString()} {t('riyal')}</p>
+              <p className="text-xl font-bold">{paidAmount.toLocaleString()} {language === 'de' ? t('euro') : t('riyal')}</p>
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-purple-500/20 rounded-lg">
@@ -283,7 +283,7 @@ const InvoicesManager: React.FC = () => {
               className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
-          
+
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as 'all' | 'pending' | 'paid' | 'cancelled')}
@@ -347,9 +347,7 @@ const InvoicesManager: React.FC = () => {
                       )}
                     </td>
                     <td className="py-4 px-4">
-                      <span className="text-emerald-400 font-medium">
-                        {invoice.amount.toLocaleString()} ريال
-                      </span>
+                      {language === 'de' ? invoice.amount.toLocaleString() + " " + t('euro') : invoice.amount.toLocaleString() + " " + t('riyal')}
                     </td>
                     <td className="py-4 px-4">
                       <span className="text-blue-400">
@@ -419,7 +417,7 @@ const InvoicesManager: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-lg p-6 w-full max-w-4xl border border-gray-700 max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">إنشاء فاتورة جديدة</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">الفني</label>
@@ -472,7 +470,7 @@ const InvoicesManager: React.FC = () => {
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">المبلغ (ريال)</label>
                 <input
@@ -587,7 +585,7 @@ const InvoicesManager: React.FC = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="flex gap-3 mt-6">
               <button
                 onClick={handleCreateInvoice}
