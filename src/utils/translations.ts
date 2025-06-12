@@ -367,6 +367,50 @@ export const translations = {
     ar: 'معلومات',
     de: 'Information'
   },
+  status: {
+    ar: 'الحالة',
+    de: 'Status'
+  },
+  actions: {
+    ar: 'الإجراءات',
+    de: 'Aktionen'
+  },
+  type: {
+    ar: 'النوع',
+    de: 'Typ'
+  },
+  date: {
+    ar: 'التاريخ',
+    de: 'Datum'
+  },
+  time: {
+    ar: 'الوقت',
+    de: 'Zeit'
+  },
+  name: {
+    ar: 'الاسم',
+    de: 'Name'
+  },
+  description: {
+    ar: 'الوصف',
+    de: 'Beschreibung'
+  },
+  cost: {
+    ar: 'التكلفة',
+    de: 'Kosten'
+  },
+  title: {
+    ar: 'العنوان',
+    de: 'Titel'
+  },
+  location: {
+    ar: 'الموقع',
+    de: 'Standort'
+  },
+  price: {
+    ar: 'السعر',
+    de: 'Preis'
+  },
 
   // Validation Messages
   required: {
@@ -1106,6 +1150,612 @@ export const translations = {
   welcomeBackMessage: {
     ar: '👋 مرحباً بعودتك {name}!\n\n✅ أنت مسجل بالفعل في النظام\n\n📝 ',
     de: '👋 Willkommen zurück {name}!\n\n✅ Sie wurden bereits erfolgreich im System registriert\n\n📝 Zur Bestätigung des Auftrags, schreibe:\nAngenommen\n\n📝 '
+  },
+
+  // Additional Missing Translations
+  priority: {
+    ar: 'الأولوية',
+    de: 'Priorität'
+  },
+  low: {
+    ar: 'منخفضة',
+    de: 'Niedrig'
+  },
+  medium: {
+    ar: 'متوسطة',
+    de: 'Mittel'
+  },
+  high: {
+    ar: 'عالية',
+    de: 'Hoch'
+  },
+  urgent: {
+    ar: 'عاجلة',
+    de: 'Dringend'
+  },
+  phone: {
+    ar: 'الهاتف',
+    de: 'Telefon'
+  },
+  address: {
+    ar: 'العنوان',
+    de: 'Adresse'
+  },
+  notes: {
+    ar: 'ملاحظات',
+    de: 'Notizen'
+  },
+  category: {
+    ar: 'الفئة',
+    de: 'Kategorie'
+  },
+  filter: {
+    ar: 'تصفية',
+    de: 'Filter'
+  },
+  clear: {
+    ar: 'مسح',
+    de: 'Löschen'
+  },
+  reset: {
+    ar: 'إعادة تعيين',
+    de: 'Zurücksetzen'
+  },
+  refresh: {
+    ar: 'تحديث',
+    de: 'Aktualisieren'
+  },
+  close: {
+    ar: 'إغلاق',
+    de: 'Schließen'
+  },
+  open: {
+    ar: 'فتح',
+    de: 'Öffnen'
+  },
+  select: {
+    ar: 'اختيار',
+    de: 'Auswählen'
+  },
+  all: {
+    ar: 'الكل',
+    de: 'Alle'
+  },
+  today: {
+    ar: 'اليوم',
+    de: 'Heute'
+  },
+  yesterday: {
+    ar: 'أمس',
+    de: 'Gestern'
+  },
+  tomorrow: {
+    ar: 'غداً',
+    de: 'Morgen'
+  },
+  thisWeek: {
+    ar: 'هذا الأسبوع',
+    de: 'Diese Woche'
+  },
+  thisMonth: {
+    ar: 'هذا الشهر',
+    de: 'Dieser Monat'
+  },
+  lastWeek: {
+    ar: 'الأسبوع الماضي',
+    de: 'Letzte Woche'
+  },
+  nextWeek: {
+    ar: 'الأسبوع القادم',
+    de: 'Nächste Woche'
+  },
+  lastMonth: {
+    ar: 'الشهر الماضي',
+    de: 'Letzter Monat'
+  },
+  nextMonth: {
+    ar: 'الشهر القادم',
+    de: 'Nächster Monat'
+  },
+  view: {
+    ar: 'عرض',
+    de: 'Ansicht'
+  },
+  listView: {
+    ar: 'عرض القائمة',
+    de: 'Listenansicht'
+  },
+  gridView: {
+    ar: 'عرض الشبكة',
+    de: 'Rasteransicht'
+  },
+  cardView: {
+    ar: 'عرض البطاقات',
+    de: 'Kartenansicht'
+  },
+  details: {
+    ar: 'التفاصيل',
+    de: 'Details'
+  },
+  showDetails: {
+    ar: 'عرض التفاصيل',
+    de: 'Details anzeigen'
+  },
+  hideDetails: {
+    ar: 'إخفاء التفاصيل',
+    de: 'Details ausblenden'
+  },
+  more: {
+    ar: 'المزيد',
+    de: 'Mehr'
+  },
+  less: {
+    ar: 'أقل',
+    de: 'Weniger'
+  },
+  showMore: {
+    ar: 'عرض المزيد',
+    de: 'Mehr anzeigen'
+  },
+  showLess: {
+    ar: 'عرض أقل',
+    de: 'Weniger anzeigen'
+  },
+  next: {
+    ar: 'التالي',
+    de: 'Weiter'
+  },
+  previous: {
+    ar: 'السابق',
+    de: 'Zurück'
+  },
+  first: {
+    ar: 'الأول',
+    de: 'Erste'
+  },
+  last: {
+    ar: 'الأخير',
+    de: 'Letzte'
+  },
+  page: {
+    ar: 'صفحة',
+    de: 'Seite'
+  },
+  of: {
+    ar: 'من',
+    de: 'von'
+  },
+  items: {
+    ar: 'عناصر',
+    de: 'Elemente'
+  },
+  total: {
+    ar: 'المجموع',
+    de: 'Gesamt'
+  },
+  count: {
+    ar: 'العدد',
+    de: 'Anzahl'
+  },
+  results: {
+    ar: 'النتائج',
+    de: 'Ergebnisse'
+  },
+  noResults: {
+    ar: 'لا توجد نتائج',
+    de: 'Keine Ergebnisse'
+  },
+  noData: {
+    ar: 'لا توجد بيانات',
+    de: 'Keine Daten'
+  },
+  empty: {
+    ar: 'فارغ',
+    de: 'Leer'
+  },
+  notSet: {
+    ar: 'غير محدد',
+    de: 'Nicht festgelegt'
+  },
+  unknown: {
+    ar: 'غير معروف',
+    de: 'Unbekannt'
+  },
+  optional: {
+    ar: 'اختياري',
+    de: 'Optional'
+  },
+  required: {
+    ar: 'مطلوب',
+    de: 'Erforderlich'
+  },
+  enabled: {
+    ar: 'مفعل',
+    de: 'Aktiviert'
+  },
+  disabled: {
+    ar: 'معطل',
+    de: 'Deaktiviert'
+  },
+  online: {
+    ar: 'متصل',
+    de: 'Online'
+  },
+  offline: {
+    ar: 'غير متصل',
+    de: 'Offline'
+  },
+  available: {
+    ar: 'متاح',
+    de: 'Verfügbar'
+  },
+  unavailable: {
+    ar: 'غير متاح',
+    de: 'Nicht verfügbar'
+  },
+  busy: {
+    ar: 'مشغول',
+    de: 'Beschäftigt'
+  },
+  free: {
+    ar: 'متاح',
+    de: 'Frei'
+  },
+  working: {
+    ar: 'يعمل',
+    de: 'Arbeitet'
+  },
+  notWorking: {
+    ar: 'لا يعمل',
+    de: 'Arbeitet nicht'
+  },
+  break: {
+    ar: 'استراحة',
+    de: 'Pause'
+  },
+  lunch: {
+    ar: 'غداء',
+    de: 'Mittagspause'
+  },
+  meeting: {
+    ar: 'اجتماع',
+    de: 'Besprechung'
+  },
+  training: {
+    ar: 'تدريب',
+    de: 'Schulung'
+  },
+  vacation: {
+    ar: 'إجازة',
+    de: 'Urlaub'
+  },
+  sick: {
+    ar: 'مريض',
+    de: 'Krank'
+  },
+  absent: {
+    ar: 'غائب',
+    de: 'Abwesend'
+  },
+  present: {
+    ar: 'حاضر',
+    de: 'Anwesend'
+  },
+  late: {
+    ar: 'متأخر',
+    de: 'Verspätet'
+  },
+  early: {
+    ar: 'مبكر',
+    de: 'Früh'
+  },
+  onTime: {
+    ar: 'في الوقت',
+    de: 'Pünktlich'
+  },
+  overdue: {
+    ar: 'متأخر',
+    de: 'Überfällig'
+  },
+  upcoming: {
+    ar: 'قادم',
+    de: 'Bevorstehend'
+  },
+  inProgress: {
+    ar: 'قيد التنفيذ',
+    de: 'In Bearbeitung'
+  },
+  onHold: {
+    ar: 'معلق',
+    de: 'Pausiert'
+  },
+  scheduled: {
+    ar: 'مجدول',
+    de: 'Geplant'
+  },
+  unscheduled: {
+    ar: 'غير مجدول',
+    de: 'Ungeplant'
+  },
+  assigned: {
+    ar: 'مكلف',
+    de: 'Zugewiesen'
+  },
+  unassigned: {
+    ar: 'غير مكلف',
+    de: 'Nicht zugewiesen'
+  },
+  approved: {
+    ar: 'موافق عليه',
+    de: 'Genehmigt'
+  },
+  rejected: {
+    ar: 'مرفوض',
+    de: 'Abgelehnt'
+  },
+  reviewed: {
+    ar: 'مراجع',
+    de: 'Überprüft'
+  },
+  draft: {
+    ar: 'مسودة',
+    de: 'Entwurf'
+  },
+  published: {
+    ar: 'منشور',
+    de: 'Veröffentlicht'
+  },
+  archived: {
+    ar: 'مؤرشف',
+    de: 'Archiviert'
+  },
+  deleted: {
+    ar: 'محذوف',
+    de: 'Gelöscht'
+  },
+  restored: {
+    ar: 'مستعاد',
+    de: 'Wiederhergestellt'
+  },
+  backup: {
+    ar: 'نسخة احتياطية',
+    de: 'Sicherung'
+  },
+  restore: {
+    ar: 'استعادة',
+    de: 'Wiederherstellen'
+  },
+  copy: {
+    ar: 'نسخ',
+    de: 'Kopieren'
+  },
+  paste: {
+    ar: 'لصق',
+    de: 'Einfügen'
+  },
+  cut: {
+    ar: 'قص',
+    de: 'Ausschneiden'
+  },
+  undo: {
+    ar: 'تراجع',
+    de: 'Rückgängig'
+  },
+  redo: {
+    ar: 'إعادة',
+    de: 'Wiederholen'
+  },
+  upload: {
+    ar: 'رفع',
+    de: 'Hochladen'
+  },
+  download: {
+    ar: 'تحميل',
+    de: 'Herunterladen'
+  },
+  import: {
+    ar: 'استيراد',
+    de: 'Importieren'
+  },
+  sync: {
+    ar: 'مزامنة',
+    de: 'Synchronisieren'
+  },
+  share: {
+    ar: 'مشاركة',
+    de: 'Teilen'
+  },
+  link: {
+    ar: 'رابط',
+    de: 'Link'
+  },
+  url: {
+    ar: 'رابط',
+    de: 'URL'
+  },
+  file: {
+    ar: 'ملف',
+    de: 'Datei'
+  },
+  folder: {
+    ar: 'مجلد',
+    de: 'Ordner'
+  },
+  image: {
+    ar: 'صورة',
+    de: 'Bild'
+  },
+  video: {
+    ar: 'فيديو',
+    de: 'Video'
+  },
+  audio: {
+    ar: 'صوت',
+    de: 'Audio'
+  },
+  document: {
+    ar: 'مستند',
+    de: 'Dokument'
+  },
+  text: {
+    ar: 'نص',
+    de: 'Text'
+  },
+  number: {
+    ar: 'رقم',
+    de: 'Nummer'
+  },
+  boolean: {
+    ar: 'منطقي',
+    de: 'Boolean'
+  },
+  array: {
+    ar: 'مصفوفة',
+    de: 'Array'
+  },
+  object: {
+    ar: 'كائن',
+    de: 'Objekt'
+  },
+  string: {
+    ar: 'نص',
+    de: 'String'
+  },
+  integer: {
+    ar: 'عدد صحيح',
+    de: 'Ganzzahl'
+  },
+  decimal: {
+    ar: 'عدد عشري',
+    de: 'Dezimalzahl'
+  },
+  percentage: {
+    ar: 'نسبة مئوية',
+    de: 'Prozentsatz'
+  },
+  currency: {
+    ar: 'عملة',
+    de: 'Währung'
+  },
+  dateTime: {
+    ar: 'التاريخ والوقت',
+    de: 'Datum und Zeit'
+  },
+  timeOnly: {
+    ar: 'الوقت فقط',
+    de: 'Nur Zeit'
+  },
+  dateOnly: {
+    ar: 'التاريخ فقط',
+    de: 'Nur Datum'
+  },
+  duration: {
+    ar: 'المدة',
+    de: 'Dauer'
+  },
+  seconds: {
+    ar: 'ثواني',
+    de: 'Sekunden'
+  },
+  minutes: {
+    ar: 'دقائق',
+    de: 'Minuten'
+  },
+  hours: {
+    ar: 'ساعات',
+    de: 'Stunden'
+  },
+  days: {
+    ar: 'أيام',
+    de: 'Tage'
+  },
+  weeks: {
+    ar: 'أسابيع',
+    de: 'Wochen'
+  },
+  months: {
+    ar: 'أشهر',
+    de: 'Monate'
+  },
+  years: {
+    ar: 'سنوات',
+    de: 'Jahre'
+  },
+  ago: {
+    ar: 'منذ',
+    de: 'vor'
+  },
+  from: {
+    ar: 'من',
+    de: 'von'
+  },
+  to: {
+    ar: 'إلى',
+    de: 'bis'
+  },
+  between: {
+    ar: 'بين',
+    de: 'zwischen'
+  },
+  and: {
+    ar: 'و',
+    de: 'und'
+  },
+  or: {
+    ar: 'أو',
+    de: 'oder'
+  },
+  not: {
+    ar: 'ليس',
+    de: 'nicht'
+  },
+  is: {
+    ar: 'هو',
+    de: 'ist'
+  },
+  are: {
+    ar: 'هم',
+    de: 'sind'
+  },
+  was: {
+    ar: 'كان',
+    de: 'war'
+  },
+  were: {
+    ar: 'كانوا',
+    de: 'waren'
+  },
+  will: {
+    ar: 'سوف',
+    de: 'wird'
+  },
+  would: {
+    ar: 'كان سيكون',
+    de: 'würde'
+  },
+  can: {
+    ar: 'يمكن',
+    de: 'kann'
+  },
+  cannot: {
+    ar: 'لا يمكن',
+    de: 'kann nicht'
+  },
+  should: {
+    ar: 'يجب',
+    de: 'sollte'
+  },
+  must: {
+    ar: 'يجب',
+    de: 'muss'
+  },
+  may: {
+    ar: 'ربما',
+    de: 'darf'
+  },
+  might: {
+    ar: 'قد',
+    de: 'könnte'
   }
 };
 

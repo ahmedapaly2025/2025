@@ -59,7 +59,7 @@ const TasksManager: React.FC = () => {
   const handleAddTask = () => {
     if (newTask.title && newTask.description && newTask.expectedCost && newTask.startDate && newTask.endDate) {
       let taskData;
-      
+
       if (newTask.type === 'group') {
         taskData = {
           ...newTask,
@@ -74,7 +74,7 @@ const TasksManager: React.FC = () => {
           targetUsers: newTask.targetUsers.length > 0 ? newTask.targetUsers : [],
         };
       }
-      
+
       addTask(taskData);
       resetForm();
       setShowAddModal(false);
@@ -104,7 +104,7 @@ const TasksManager: React.FC = () => {
   const handleUpdateTask = () => {
     if (editingTask && newTask.title && newTask.description && newTask.expectedCost && newTask.startDate && newTask.endDate) {
       let taskData;
-      
+
       if (newTask.type === 'group') {
         taskData = {
           ...newTask,
@@ -119,7 +119,7 @@ const TasksManager: React.FC = () => {
           targetUsers: newTask.targetUsers.length > 0 ? newTask.targetUsers : [],
         };
       }
-      
+
       updateTask(editingTask.id, taskData);
       resetForm();
       setEditingTask(null);
@@ -266,7 +266,7 @@ const TasksManager: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  
+
                   {/* زر إرسال الموقع مع إعادة الإرسال */}
                   <div className="relative group">
                     <button
@@ -297,7 +297,7 @@ const TasksManager: React.FC = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   {/* زر تغيير الحالة */}
                   <div className="relative">
                     <button
@@ -307,7 +307,7 @@ const TasksManager: React.FC = () => {
                     >
                       <RefreshCw size={16} />
                     </button>
-                    
+
                     {showStatusMenu === task.id && (
                       <div className="absolute top-8 right-0 bg-gray-800 border border-gray-600 rounded-lg shadow-lg p-2 z-10 min-w-[120px]">
                         <button
@@ -331,7 +331,7 @@ const TasksManager: React.FC = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   <button
                     onClick={() => handleEditTask(task)}
                     className="text-gray-400 hover:text-blue-400 transition-colors p-1 rounded hover:bg-gray-600"
@@ -348,9 +348,9 @@ const TasksManager: React.FC = () => {
                   </button>
                 </div>
               </div>
-              
+
               <p className="text-gray-400 text-sm mb-4" style={{ textAlign }}>{task.description}</p>
-              
+
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="flex items-center gap-2 text-sm">
                   <DollarSign size={14} className="text-emerald-400" />
@@ -412,7 +412,7 @@ const TasksManager: React.FC = () => {
                   )}
                 </div>
               )}
-              
+
               <div className="flex items-center justify-between">
                 <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(task.status)}`}>
                   {getStatusText(task.status)}
@@ -442,7 +442,7 @@ const TasksManager: React.FC = () => {
             <h3 className="text-lg font-semibold mb-4\" style={{ textAlign }}>
               {editingTask ? (language === 'ar' ? 'تعديل المهمة' : 'Aufgabe bearbeiten') : t('addNewTask')}
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-300 mb-1" style={{ textAlign }}>{t('taskTitle')}</label>
@@ -455,7 +455,7 @@ const TasksManager: React.FC = () => {
                   style={{ textAlign }}
                 />
               </div>
-              
+
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-300 mb-1" style={{ textAlign }}>{t('taskDescription')}</label>
                 <textarea
@@ -467,7 +467,7 @@ const TasksManager: React.FC = () => {
                   style={{ textAlign }}
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1" style={{ textAlign }}>{t('taskType')}</label>
                 <select
@@ -487,7 +487,7 @@ const TasksManager: React.FC = () => {
                   <option value="group">{t('group')} ({language === 'ar' ? 'إرسال لجميع الفنيين تلقائياً' : 'Automatisch an alle Techniker senden'})</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1" style={{ textAlign }}>{t('expectedCost')} ({t('riyal')})</label>
                 <input
@@ -509,7 +509,7 @@ const TasksManager: React.FC = () => {
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1" style={{ textAlign }}>{t('endDate')}</label>
                 <input
@@ -593,7 +593,7 @@ const TasksManager: React.FC = () => {
                 </label>
               </div>
             </div>
-            
+
             <div className="flex gap-3 mt-6">
               <button
                 onClick={editingTask ? handleUpdateTask : handleAddTask}
