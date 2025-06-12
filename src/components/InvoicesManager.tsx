@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useBotContext } from '../context/BotContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useTranslation } from '../utils/translations';
 import { 
   Plus, 
   Search, 
@@ -22,6 +24,8 @@ import { format } from 'date-fns';
 
 const InvoicesManager: React.FC = () => {
   const { invoices, subscribers, tasks, createInvoice, updateInvoice, exportInvoices, sendInvoiceToTechnician } = useBotContext();
+  const { language, direction, textAlign } = useLanguage();
+  const { t } = useTranslation(language);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'paid' | 'cancelled'>('all');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -61,9 +65,9 @@ const InvoicesManager: React.FC = () => {
   const totalCommission = invoices.reduce((sum, inv) => sum + (inv.commission || 0), 0);
 
   const paymentMethods = [
-    { value: 'visa', label: 'فيزا', icon: <CreditCard size={16} /> },
-    { value: 'transfer', label: 'تحويل', icon: <Banknote size={16} /> },
-    { value: 'cash', label: 'كاش', icon: <Wallet size={16} /> },
+    { value: 'visa', label: t('visa'), icon: <CreditCard size={16} /> },
+    { value: 'transfer', label: t('transfer'), icon: <Banknote size={16} /> },
+    { value: 'cash', label: t('cash'), icon: <Wallet size={16} /> },
     { value: 'custom', label: 'أخرى', icon: <FileText size={16} /> },
   ];
 
@@ -153,13 +157,13 @@ const InvoicesManager: React.FC = () => {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'paid':
-        return 'مدفوعة';
+        return t('paid');
       case 'pending':
-        return 'معلقة';
+        return t('pending');
       case 'cancelled':
-        return 'ملغية';
+        return t('cancelled');
       default:
-        return 'غير محدد';
+        return t('notSet');
     }
   };
 
@@ -188,8 +192,8 @@ const InvoicesManager: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">إدارة الفواتير</h2>
-          <p className="text-gray-400">إنشاء ومتابعة فواتير الفنيين</p>
+          <h2 className="text-2xl font-bold">{t('invoicesManagement')}</h2>
+          <p className="text-gray-400">{t('createTrackInvoices')}</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -197,21 +201,21 @@ const InvoicesManager: React.FC = () => {
             className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg text-white transition-colors"
           >
             <Printer size={20} />
-            طباعة
+            {t('print')}
           </button>
           <button
             onClick={handleExportInvoices}
             className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white transition-colors"
           >
             <Download size={20} />
-            تصدير الفواتير
+            {t('exportInvoices')}
           </button>
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white transition-colors"
           >
             <Plus size={20} />
-            إنشاء فاتورة جديدة
+            {t('createNewInvoice')}
           </button>
         </div>
       </div>
@@ -224,7 +228,7 @@ const InvoicesManager: React.FC = () => {
               <FileText className="text-blue-400" size={20} />
             </div>
             <div>
-              <p className="text-gray-400 text-sm">إجمالي الفواتير</p>
+              <p className="text-gray-400 text-sm">{t('totalInvoices')}</p>
               <p className="text-xl font-bold">{invoices.length}</p>
             </div>
           </div>
@@ -236,8 +240,8 @@ const InvoicesManager: React.FC = () => {
               <DollarSign className="text-emerald-400" size={20} />
             </div>
             <div>
-              <p className="text-gray-400 text-sm">إجمالي المبلغ</p>
-              <p className="text-xl font-bold">{totalAmount.toLocaleString()} ريال</p>
+              <p className="text-gray-400 text-sm">{t('totalAmount')}</p>
+              <p className="text-xl font-bold">{totalAmount.toLocaleString()} {t('riyal')}</p>
             </div>
           </div>
         </div>
@@ -248,8 +252,8 @@ const InvoicesManager: React.FC = () => {
               <CheckCircle className="text-green-400" size={20} />
             </div>
             <div>
-              <p className="text-gray-400 text-sm">المبلغ المدفوع</p>
-              <p className="text-xl font-bold">{paidAmount.toLocaleString()} ريال</p>
+              <p className="text-gray-400 text-sm">{t('paidAmount')}</p>
+              <p className="text-xl font-bold">{paidAmount.toLocaleString()} {t('riyal')}</p>
             </div>
           </div>
         </div>
@@ -260,8 +264,8 @@ const InvoicesManager: React.FC = () => {
               <DollarSign className="text-purple-400" size={20} />
             </div>
             <div>
-              <p className="text-gray-400 text-sm">إجمالي العمولات</p>
-              <p className="text-xl font-bold">{totalCommission.toLocaleString()} ريال</p>
+              <p className="text-gray-400 text-sm">{t('totalCommissions')}</p>
+              <p className="text-xl font-bold">{totalCommission.toLocaleString()} {t('riyal')}</p>
             </div>
           </div>
         </div>

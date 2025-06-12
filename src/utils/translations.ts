@@ -349,11 +349,7 @@ export const translations = {
   // Common Phrases
   riyal: {
     ar: 'ريال',
-    de: 'Euro'
-  },
-  currencyType: {
-    ar: 'ريال',
-    de: 'Euro'
+    de: '€'
   },
   yes: {
     ar: 'نعم',

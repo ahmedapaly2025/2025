@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useBotContext } from '../context/BotContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useTranslation } from '../utils/translations';
 import { 
   Download, 
   FileText, 
@@ -27,6 +29,8 @@ import { format } from 'date-fns';
 
 const ReportsManager: React.FC = () => {
   const { stats, subscribers, tasks, invoices, commands, exportReports } = useBotContext();
+  const { language, direction, textAlign } = useLanguage();
+  const { t } = useTranslation(language);
   const [reportType, setReportType] = useState<'overview' | 'technicians' | 'tasks' | 'financial' | 'commands'>('overview');
   const [selectedTechnician, setSelectedTechnician] = useState<string | null>(null);
   const [showTaskDetails, setShowTaskDetails] = useState<string | null>(null);
@@ -51,11 +55,11 @@ const ReportsManager: React.FC = () => {
   };
 
   const reportTypes = [
-    { value: 'overview', label: 'النظرة العامة', icon: <BarChart3 size={16} /> },
-    { value: 'technicians', label: 'تقرير الفنيين', icon: <Users size={16} /> },
-    { value: 'tasks', label: 'تقرير المهام', icon: <FileText size={16} /> },
-    { value: 'financial', label: 'التقرير المالي', icon: <DollarSign size={16} /> },
-    { value: 'commands', label: 'تقرير الأوامر', icon: <TrendingUp size={16} /> },
+    { value: 'overview', label: t('overviewReport'), icon: <BarChart3 size={16} /> },
+    { value: 'technicians', label: t('techniciansReport'), icon: <Users size={16} /> },
+    { value: 'tasks', label: t('tasksReport'), icon: <FileText size={16} /> },
+    { value: 'financial', label: t('financialReport'), icon: <DollarSign size={16} /> },
+    { value: 'commands', label: t('commandsReport'), icon: <TrendingUp size={16} /> },
   ];
 
   // حساب إحصائيات الفني
@@ -107,7 +111,7 @@ const ReportsManager: React.FC = () => {
           <div className="flex items-center gap-3">
             <Users className="text-blue-400" size={24} />
             <div>
-              <p className="text-gray-400 text-sm">إجمالي الفنيين</p>
+              <p className="text-gray-400 text-sm">{t('totalTechnicians')}</p>
               <p className="text-xl font-bold">{stats.totalSubscribers.toLocaleString()}</p>
             </div>
           </div>
@@ -116,8 +120,8 @@ const ReportsManager: React.FC = () => {
           <div className="flex items-center gap-3">
             <DollarSign className="text-emerald-400" size={24} />
             <div>
-              <p className="text-gray-400 text-sm">إجمالي الإيرادات من العمولات</p>
-              <p className="text-xl font-bold">{stats.totalRevenue.toLocaleString()} ريال</p>
+              <p className="text-gray-400 text-sm">{t('totalCommissions')}</p>
+              <p className="text-xl font-bold">{stats.totalRevenue.toLocaleString()} {t('riyal')}</p>
             </div>
           </div>
         </div>
@@ -125,7 +129,7 @@ const ReportsManager: React.FC = () => {
           <div className="flex items-center gap-3">
             <FileText className="text-purple-400" size={24} />
             <div>
-              <p className="text-gray-400 text-sm">المهام النشطة</p>
+              <p className="text-gray-400 text-sm">{t('activeTasks')}</p>
               <p className="text-xl font-bold">{stats.activeTasks}</p>
             </div>
           </div>
@@ -134,7 +138,7 @@ const ReportsManager: React.FC = () => {
           <div className="flex items-center gap-3">
             <TrendingUp className="text-orange-400" size={24} />
             <div>
-              <p className="text-gray-400 text-sm">معدل الإنجاز</p>
+              <p className="text-gray-400 text-sm">{t('taskCompletionRate')}</p>
               <p className="text-xl font-bold">{stats.taskCompletion}%</p>
             </div>
           </div>
@@ -644,8 +648,8 @@ const ReportsManager: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">التقارير التفصيلية</h2>
-          <p className="text-gray-400">تقارير شاملة حول أداء البوت والعمولات</p>
+          <h2 className="text-2xl font-bold">{t('detailedReports')}</h2>
+          <p className="text-gray-400">{t('comprehensiveReports')}</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -653,14 +657,14 @@ const ReportsManager: React.FC = () => {
             className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg text-white transition-colors"
           >
             <Printer size={20} />
-            طباعة
+            {t('print')}
           </button>
           <button
             onClick={() => handleExportReport(reportType)}
             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white transition-colors"
           >
             <Download size={20} />
-            تصدير التقرير
+            {t('exportReport')}
           </button>
         </div>
       </div>
@@ -669,7 +673,7 @@ const ReportsManager: React.FC = () => {
         <div className="flex items-center gap-4 mb-6">
           <div className="flex items-center gap-2">
             <Filter size={16} className="text-gray-400" />
-            <span className="text-gray-300 text-sm">نوع التقرير:</span>
+            <span className="text-gray-300 text-sm">{t('reportType')}:</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {reportTypes.map((type) => (
