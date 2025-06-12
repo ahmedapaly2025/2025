@@ -22,8 +22,11 @@ import {
   Pause,
   Radio,
   Shield,
-  Globe
+  Globe,
+  Database,
+  AlertCircle
 } from 'lucide-react';
+import { DatabaseService } from '../services/database';
 
 const SettingsManager: React.FC = () => {
   const { 
@@ -35,14 +38,16 @@ const SettingsManager: React.FC = () => {
     stopTelegramPolling, 
     isPolling
   } = useBotContext();
-  
+
   const { language, setLanguage, direction, textAlign } = useLanguage();
   const { t } = useTranslation(language);
-  
+
   const [localSettings, setLocalSettings] = useState(settings);
   const [connectionTestResult, setConnectionTestResult] = useState<boolean | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isTestingConnection, setIsTestingConnection] = useState(false);
+  const [isTestingDatabase, setIsTestingDatabase] = useState(false);
+  const [databaseTestResult, setDatabaseTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
   useEffect(() => {
     setLocalSettings(settings);
@@ -67,11 +72,11 @@ const SettingsManager: React.FC = () => {
   const handleTestConnection = async () => {
     setIsTestingConnection(true);
     setConnectionTestResult(null);
-    
+
     try {
       const response = await fetch(`https://api.telegram.org/bot${localSettings.botToken}/getMe`);
       const data = await response.json();
-      
+
       if (data.ok) {
         setConnectionTestResult(true);
         const newSettings = { 
@@ -93,7 +98,7 @@ const SettingsManager: React.FC = () => {
       } else {
         setConnectionTestResult(false);
         setLocalSettings(prev => ({ ...prev, isConnected: false }));
-        
+
         addNotification({
           type: 'system',
           title: '❌ ' + t('error'),
@@ -105,7 +110,7 @@ const SettingsManager: React.FC = () => {
     } catch (error) {
       setConnectionTestResult(false);
       setLocalSettings(prev => ({ ...prev, isConnected: false }));
-      
+
       addNotification({
         type: 'system',
         title: '❌ ' + t('error'),
@@ -118,11 +123,41 @@ const SettingsManager: React.FC = () => {
     }
   };
 
+  const testDatabaseConnection = async () => {
+    setIsTestingDatabase(true);
+    setDatabaseTestResult(null);
+
+    try {
+      const result = await DatabaseService.testConnection();
+      setDatabaseTestResult(result);
+
+      addNotification({
+        type: result.success ? 'system' : 'system',
+        title: result.success ? '✅ نجح اختبار قاعدة البيانات' : '❌ فشل اختبار قاعدة البيانات',
+        message: result.message
+      });
+    } catch (error) {
+      const errorMessage = 'خطأ في اختبار الاتصال بقاعدة البيانات';
+      setDatabaseTestResult({
+        success: false,
+        message: errorMessage
+      });
+
+      addNotification({
+        type: 'system',
+        title: '❌ خطأ في الاختبار',
+        message: errorMessage
+      });
+    } finally {
+      setIsTestingDatabase(false);
+    }
+  };
+
   const handleBotTokenChange = (token: string) => {
     setLocalSettings({ ...localSettings, botToken: token });
     if (token !== settings.botToken) {
-      setLocalSettings(prev => ({ ...prev, isConnected: false }));
       setConnectionTestResult(null);
+      setLocalSettings(prev => ({ ...prev, isConnected: false }));
     }
   };
 
@@ -131,7 +166,7 @@ const SettingsManager: React.FC = () => {
     const newSettings = { ...localSettings, soundEnabled: newSoundEnabled };
     setLocalSettings(newSettings);
     updateSettings(newSettings);
-    
+
     addNotification({
       type: 'system',
       title: newSoundEnabled ? '🔊 ' + t('success') : '🔇 ' + t('success'),
@@ -325,7 +360,7 @@ const SettingsManager: React.FC = () => {
                     </>
                   )}
                 </div>
-                
+
                 <button
                   onClick={handleTestConnection}
                   disabled={isTestingConnection || !localSettings.botToken}
@@ -394,7 +429,7 @@ const SettingsManager: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <button
                   onClick={handleTogglePolling}
                   disabled={!localSettings.isConnected}

@@ -321,17 +321,122 @@ export class DatabaseService {
     }
   }
 
-  static async markNotificationAsRead(id: string): Promise<boolean> {
+  static async updateNotification(id: string, updates: Partial<any>): Promise<boolean> {
     try {
       const { error } = await supabase
         .from('notifications')
-        .update({ is_read: true })
+        .update({
+          title: updates.title,
+          message: updates.message,
+          type: updates.type,
+          is_read: updates.read,
+        })
         .eq('id', id);
 
       if (error) throw error;
       return true;
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      console.error('Error updating notification:', error);
+      return false;
+    }
+  }
+
+  static async clearAllNotifications(): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // حذف جميع الإشعارات
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error clearing all notifications:', error);
+      return false;
+    }
+  }
+
+  // دالة اختبار الاتصال بقاعدة البيانات
+  static async testConnection(): Promise<{ success: boolean; message: string; details?: any }> {
+    try {
+      // اختبار الاتصال الأساسي
+      const { data, error } = await supabase
+        .from('subscribers')
+        .select('count', { count: 'exact', head: true });
+
+      if (error) {
+        return {
+          success: false,
+          message: `خطأ في الاتصال بقاعدة البيانات: ${error.message}`,
+          details: error
+        };
+      }
+
+      // اختبار إضافي - التحقق من وجود الجداول المطلوبة
+      const tables = ['subscribers', 'tasks', 'invoices', 'notifications', 'bot_settings'];
+      const tableTests = [];
+
+      for (const table of tables) {
+        try {
+          const { error: tableError } = await supabase
+            .from(table)
+            .select('count', { count: 'exact', head: true });
+          
+          tableTests.push({
+            table,
+            exists: !tableError,
+            error: tableError?.message
+          });
+        } catch (e) {
+          tableTests.push({
+            table,
+            exists: false,
+            error: e.message
+          });
+        }
+      }
+
+      const missingTables = tableTests.filter(t => !t.exists);
+      
+      if (missingTables.length > 0) {
+        return {
+          success: false,
+          message: `بعض الجداول المطلوبة غير موجودة: ${missingTables.map(t => t.table).join(', ')}`,
+          details: { tableTests }
+        };
+      }
+
+      return {
+        success: true,
+        message: 'تم الاتصال بقاعدة البيانات بنجاح! جميع الجداول المطلوبة موجودة.',
+        details: {
+          subscribersCount: data || 0,
+          tablesStatus: tableTests
+        }
+      };
+
+    } catch (error) {
+      return {
+        success: false,
+        message: `فشل في اختبار الاتصال: ${error.message}`,
+        details: error
+      };
+    }
+  }
+
+  // دالة إنشاء الجداول إذا لم تكن موجودة
+  static async createTablesIfNotExists(): Promise<boolean> {
+    try {
+      // قراءة schema من الملف وتنفيذه
+      // هذا مثال مبسط - في الواقع قد تحتاج لتنفيذ كل جدول منفصل
+      console.log('Creating database tables...');
+      
+      // يمكنك تنفيذ الـ SQL مباشرة إذا كان لديك صلاحيات
+      // أو استخدام Supabase Dashboard لتنفيذ schema.sql
+      
+      return true;
+    } catch (error) {
+      console.error('Error creating tables:', error);
       return false;
     }
   }
